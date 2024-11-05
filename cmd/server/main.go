@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 
+	"github.com/Slava1989/goRestAPI/internal/comment"
 	"github.com/Slava1989/goRestAPI/internal/db"
+	transportHttp "github.com/Slava1989/goRestAPI/internal/transport/http"
 )
 
 // Run - is going to be responsible for
@@ -24,7 +26,12 @@ func Run() error {
 		return err
 	}
 
-	fmt.Println("successfully connected and pinged database")
+	cmtService := comment.NewService(db)
+
+	httpHandler := transportHttp.NewHandler(cmtService)
+	if err := httpHandler.Serve(); err != nil {
+		return err
+	}
 
 	return nil
 }
